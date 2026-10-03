@@ -15,3 +15,11 @@ SessionLocal = sessionmaker(bind=engine)
 
 class Base(DeclarativeBase):
     pass
+
+# Зависимость для роутов: выдаёт сессию и закрывает её после запроса
+def get_db():
+    db = SessionLocal()          # открыли «разговор» с базой
+    try:
+        yield db                 # отдали сессию в роут (см. пояснение ниже)
+    finally:
+        db.close()               # после ответа — закрыли, всегда
