@@ -79,4 +79,10 @@ function copyLink() {
     gap: 12px;
     justify-content: center;
 }
+
+@media screen and (max-width: 768px) {
+ .site-header__controls {
+    flex-direction: column;
+ }
+}
 </style>
