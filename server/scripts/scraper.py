@@ -41,12 +41,23 @@ def fetch_chapter_list():
     return out
 
 
+def inner_html(tag):
+    """HTML внутри тега (без самого обрамляющего тега), с нормализованными пробелами."""
+    html = "".join(str(c) for c in tag.contents)
+    return re.sub(r"\s+", " ", html).strip()
+
+
+def norm_text(s):
+    return re.sub(r"\s+", " ", (s or "").strip())
+
+
 def parse_article(html, name, number, source_url):
     soup = BeautifulSoup(html, "lxml")
     node = soup.find(id="roodNodeOfShareText")
     if not node:
         return None
 
+    # 1) сноски-определения: вытащить в список и убрать блок из дерева
     footnotes = []
     fnsec = node.find("section", class_="footnotes")
     if fnsec:
@@ -59,14 +70,8 @@ def parse_article(html, name, number, source_url):
                               "text": li.get_text(" ", strip=True)})
         fnsec.decompose()
 
-    heard = None
-    h2 = node.find("h2")
-    if h2:
-        for ref in h2.select("a.footnote-ref"):
-            ref.decompose()
-        normalize_ws(h2)
-        heard = h2.get_text(" ", strip=True)
-
+    # 2) ВСЕ ссылки-сноски (в h2 и в теле) -> единый формат <sup><a href="#fn-N">N</a></sup>
+    #    делаем ДО извлечения heard, чтобы сноска сохранилась и там
     for ref in node.select("a.footnote-ref"):
         sup = ref.find("sup")
         num = re.sub(r"\D", "", (sup.get_text() if sup else ref.get_text()) or "")
@@ -76,10 +81,53 @@ def parse_article(html, name, number, source_url):
         new_sup.append(a)
         ref.replace_with(new_sup)
 
+    # 3) heard: берём <h2> КАК HTML (со сноской), оборачивая дату в <strong>
+    heard = None
+    h2 = node.find("h2")
+    if h2:
+        normalize_ws(h2)
+        # разделим: текст даты -> в <strong>, сноску (<sup>) оставим как есть
+        sup = h2.find("sup")
+        sup_html = str(sup) if sup else ""
+        if sup:
+            sup.extract()                      # временно убрать, чтобы взять чистый текст даты
+        date_text = norm_text(h2.get_text(" ", strip=True))
+        heard = f"{date_text}{sup_html}" if date_text else (sup_html or None)
+        h2.decompose()
+
+    # 4) заголовок <h1> убираем из тела (у нас есть title отдельно)
+    h1 = node.find("h1")
+    if h1:
+        h1.decompose()
+
+    # 5) тело: абзацы <p>, кроме мусорных (дубль заголовка / строка-дата "Услышано")
+    title_variants = {norm_text(name), norm_text(f"{number}. {name}")}
     parts = []
     for p in node.find_all("p"):
         normalize_ws(p)
+        txt = norm_text(p.get_text(" ", strip=True))
+
+        # пропустить дубль заголовка
+        if txt in title_variants:
+            continue
+
+        # пропустить строку автора (она есть в шапке сайта)
+        if txt.startswith("Йегуда Лейб") and "Бааль Сулам" in txt:
+            continue
+
+        # строка "Услышано ..." в теле (у глав без <h2>)
+        if txt.startswith("Услышано"):
+            # если heard ещё пуст — перенести этот абзац (с HTML/сноской) в heard
+            if not heard and txt != "Услышано":
+                heard = inner_html(p)
+            # в любом случае не кладём этот абзац в тело
+            continue
+
         parts.append(str(p))
+
+    # пустое "Услышано" без даты -> не храним
+    if heard and norm_text(BeautifulSoup(heard, "lxml").get_text()) == "Услышано":
+        heard = None
 
     return {
         "number": number,

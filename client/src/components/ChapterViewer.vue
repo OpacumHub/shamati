@@ -23,7 +23,7 @@ async function loadChapter() {
   <div class="viewer">
     <header class="site-header">
       <h1 class="site-header__title">Шамати</h1>
-      <p class="site-header__author">Бааль Сулам</p>
+      <p class="site-header__author">Йегуда Лейб Алеви Ашлаг (Бааль Сулам)</p>
     </header>
     <div class="controls">
       <n-button
@@ -32,7 +32,7 @@ async function loadChapter() {
         :loading="loading"
         @click="loadChapter"
       >
-        Выбрать главу
+        Показать случайную главу
       </n-button>
     </div>
 
@@ -46,9 +46,7 @@ async function loadChapter() {
       <h1 class="chapter__title">
         {{ chapter.number }}. {{ chapter.title }}
       </h1>
-      <p v-if="chapter.heard" class="chapter__heard">
-        {{ chapter.heard }}
-      </p>
+      <p v-if="chapter.heard" class="chapter__heard"  v-html="chapter.heard"></p>
 
       <!-- тело главы: это готовый HTML из базы -->
       <div class="chapter__body" v-html="chapter.content_html"></div>
@@ -100,6 +98,7 @@ async function loadChapter() {
   color: #888;
   font-style: italic;
   margin-bottom: 20px;
+  font-size: 17px;
 }
 .chapter__body {
   line-height: 1.7;
@@ -120,5 +119,12 @@ async function loadChapter() {
 }
 .chapter__footnotes ol {
   padding-left: 24px;
+}
+.chapter__heard :deep(sup) {
+  font-size: 0.7em;
+}
+.chapter__heard :deep(a) {
+  color: #0077ff;
+  text-decoration: none;
 }
 </style>
