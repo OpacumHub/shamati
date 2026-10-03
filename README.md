@@ -26,7 +26,7 @@
 
 ## Структура проекта
 
-​```
+```
 shamati/
 ├── client/              # фронтенд (Vue + Vite)
 │   ├── src/
@@ -44,13 +44,14 @@ shamati/
 │   │   ├── schemas.py    # Pydantic-схемы (ChapterOut)
 │   │   ├── daily.py      # логика "статьи дня" (Hebcal + seed + кэш)
 │   │   └── routers/
-│   │       └── chapters.py  # /api/chapters/{random,daily,:id}
-│   ├── scripts/          # наполнение БД (парсер)
-│   │   ├── scraper.py        # парсинг глав с kabbalahmedia.info
-│   │   ├── fetch_retry.py    # загрузка с повторами
-│   │   └── import_chapters.py# импорт глав в БД
+│   │       └── chapters.py
+│   ├── scripts/          # наполнение БД
+│   │   ├── scraper.py
+│   │   ├── fetch_retry.py
+│   │   └── import_chapters.py
 │   ├── migrations/       # Alembic
 │   ├── dev/              # архив диагностических скриптов
 │   ├── .env              # секреты (НЕ в git)
 │   └── requirements.txt
-└── deploy-frontend.sh   # сборка фронта + выкладка в docroot
+└── deploy-frontend.sh
+```
