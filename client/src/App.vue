@@ -1,22 +1,32 @@
 <script setup>
-import { NConfigProvider } from 'naive-ui'
-import ChapterViewer from './components/ChapterViewer.vue'
+import { NConfigProvider, NMessageProvider } from 'naive-ui'
+import AppHeader from './components/AppHeader.vue'
 
-// переопределение темы Naive UI
 const themeOverrides = {
-   common: {
+  common: {
     primaryColor: '#0077ff',
-    primaryColorHover: '#2b8fff',   // светлее — при наведении
-    primaryColorPressed: '#0062d6', // темнее — при нажатии
+    primaryColorHover: '#2b8fff',
+    primaryColorPressed: '#0062d6',
   },
 }
-
 </script>
 
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
-    <div class="page">
-      <ChapterViewer />
-    </div>
+    <n-message-provider placement="bottom">
+      <div class="page">
+        <div class="container">
+          <AppHeader />
+          <router-view />
+        </div>
+      </div>
+    </n-message-provider>
   </n-config-provider>
 </template>
+
+<style scoped>
+.container {
+  max-width: 720px;
+  width: 100%;
+}
+</style>
