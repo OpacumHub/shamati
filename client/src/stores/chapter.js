@@ -1,20 +1,23 @@
 import { reactive } from 'vue'
 import axios from 'axios'
 
+// искусственная задержка (мс) — чтобы скелетон был виден
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 // общее реактивное состояние текущей показанной главы
 export const chapterState = reactive({
   chapter: null,     // показанная глава
   loading: false,
 })
 
-// показать случайную главу (меняет только контент, не адрес)
-export async function loadRandom() {
+// загрузить случайную главу В СОСТОЯНИЕ и вернуть её id (для перехода)
+export async function fetchRandom() {
   chapterState.loading = true
   try {
     const { data } = await axios.get('/api/chapters/random')
-    chapterState.chapter = data
-  } catch (e) {
-    console.error('Ошибка загрузки случайной главы:', e)
+    await delay(300)                 // искусственная секунда для скелетона
+    chapterState.chapter = data       // кладём сразу, чтобы не грузить повторно
+    return data.id
   } finally {
     chapterState.loading = false
   }
@@ -22,9 +25,14 @@ export async function loadRandom() {
 
 // показать главу по id (для страницы /chapter/:id)
 export async function loadById(id) {
+  // уже загружена эта глава (напр. пришли через "Случайную") — не грузим повторно
+  if (chapterState.chapter && String(chapterState.chapter.id) === String(id)) {
+    return true
+  }
   chapterState.loading = true
   try {
     const { data } = await axios.get(`/api/chapters/${id}`)
+    await delay(300)                 // искусственная секунда для скелетона
     chapterState.chapter = data
     return true
   } catch (e) {
@@ -36,12 +44,12 @@ export async function loadById(id) {
   }
 }
 
-// статья дня (пока заглушка — временно случайная; в блоке Торы заменим на дату+seed)
+// статья дня
 export async function loadDaily() {
   chapterState.loading = true
   try {
-    // TODO: заменить на /api/chapters/daily когда сделаем Тора-seed
-    const { data } = await axios.get('/api/chapters/random')
+    const { data } = await axios.get('/api/chapters/daily')   // было /random
+    await delay(300)                 // искусственная секунда для скелетона
     chapterState.chapter = data
   } catch (e) {
     console.error('Ошибка загрузки статьи дня:', e)
@@ -49,3 +57,17 @@ export async function loadDaily() {
     chapterState.loading = false
   }
 }
+
+// export async function loadDaily() {
+//   chapterState.loading = true
+//   try {
+//     // TODO: заменить на /api/chapters/daily когда сделаем Тора-seed
+//     const { data } = await axios.get('/api/chapters/random')
+//     chapterState.chapter = data
+//   } catch (e) {
+//     console.error('Ошибка загрузки статьи дня:', e)
+//   } finally {
+//     chapterState.loading = false
+//   }
+// }
+

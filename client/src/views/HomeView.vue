@@ -5,14 +5,10 @@ import ChapterContent from '../components/ChapterContent.vue'
 
 onMounted(() => {
   document.title = 'Шамати. Бааль Сулам'
-  // грузим статью дня только при первом/чистом заходе.
-  // если глава уже есть в состоянии (напр. нажали "Случайную") — не перетираем.
-  if (!chapterState.chapter) {
-    loadDaily()
-  }
+  loadDaily()                    // главная = всегда статья дня
 })
 </script>
 
 <template>
-  <ChapterContent :chapter="chapterState.chapter" />
+  <ChapterContent :chapter="chapterState.chapter" :loading="chapterState.loading" />
 </template>

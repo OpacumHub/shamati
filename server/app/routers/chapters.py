@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.daily import get_daily_chapter_number
 from app.database import get_db
 from app.models import Chapter
 from app.schemas import ChapterOut
@@ -17,6 +18,17 @@ def get_random_chapter(db: Session = Depends(get_db)):
     chapter = db.query(Chapter).order_by(func.random()).first()
     if not chapter:
         raise HTTPException(status_code=404, detail="В базе нет глав")
+    return chapter
+
+@router.get("/daily", response_model=ChapterOut)
+def get_daily_chapter(db: Session = Depends(get_db)):
+    total = db.query(Chapter).count()
+    if total == 0:
+        raise HTTPException(status_code=404, detail="В базе нет глав")
+    number = get_daily_chapter_number(total)
+    chapter = db.query(Chapter).filter(Chapter.number == number).first()
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Глава дня не найдена")
     return chapter
 
 @router.get("/{chapter_id}", response_model=ChapterOut)
