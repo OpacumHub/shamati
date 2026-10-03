@@ -1,7 +1,12 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { NConfigProvider } from 'naive-ui'
+import ChapterViewer from './components/ChapterViewer.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <n-config-provider>
+    <div class="page">
+      <ChapterViewer />
+    </div>
+  </n-config-provider>
 </template>

@@ -18,3 +18,10 @@ def get_random_chapter(db: Session = Depends(get_db)):
     if not chapter:
         raise HTTPException(status_code=404, detail="В базе нет глав")
     return chapter
+
+@router.get("/{chapter_id}", response_model=ChapterOut)
+def get_chapter(chapter_id: int, db: Session = Depends(get_db)):
+    chapter = db.query(Chapter).filter(Chapter.id == chapter_id).first()
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Глава не найдена")
+    return chapter
