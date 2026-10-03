@@ -48,7 +48,7 @@ function copyLink() {
                 Скопировать ссылку
             </n-button>
 
-            <n-button  v-if="route.path !== '/'"  type="primary" dashed size="large" @click="goHome">
+            <n-button  v-if="route.path !== '/'"  size="large" @click="goHome">
                 На главную
             </n-button>
         </div>

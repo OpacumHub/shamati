@@ -29,9 +29,7 @@ watch(
     title="Глава не найдена"
     description="Возможно, ссылка неверна."
   >
-    <template #footer>
-      <n-button @click="$router.push('/')">На главную</n-button>
-    </template>
+  
   </n-result>
   <ChapterContent v-else :chapter="chapterState.chapter" :loading="chapterState.loading" />
 </template>
