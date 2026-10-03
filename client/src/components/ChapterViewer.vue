@@ -21,6 +21,10 @@ async function loadChapter() {
 
 <template>
   <div class="viewer">
+    <header class="site-header">
+      <h1 class="site-header__title">Шамати</h1>
+      <p class="site-header__author">Бааль Сулам</p>
+    </header>
     <div class="controls">
       <n-button
         type="primary"
@@ -63,6 +67,18 @@ async function loadChapter() {
 </template>
 
 <style scoped>
+.site-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.site-header__title {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+.site-header__author {
+  color: #888;
+  font-size: 16px;
+}
 .viewer {
   max-width: 720px;
   width: 100%;
@@ -101,5 +117,8 @@ async function loadChapter() {
 }
 .chapter__footnotes li {
   margin-bottom: 8px;
+}
+.chapter__footnotes ol {
+  padding-left: 24px;
 }
 </style>
