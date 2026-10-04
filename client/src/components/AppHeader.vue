@@ -40,7 +40,7 @@ function copyLink() {
         <p class="site-header__author">Йегуда Лейб Алеви Ашлаг (Бааль Сулам)</p>
 
         <div class="site-header__controls">
-            <n-button type="primary" size="large" :loading="chapterState.loading" @click="showRandom">
+            <n-button type="primary" size="large" :loading="chapterState.randomLoading" @click="showRandom">
                 Случайная статья
             </n-button>
 
