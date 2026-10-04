@@ -1,6 +1,7 @@
 import re
 import datetime
 import httpx
+import random
 
 HEBCAL_URL = "https://www.hebcal.com/hebcal"
 
@@ -43,16 +44,14 @@ def compute_daily_number(today, total_chapters):
     seed = номер_параши * 7 + день_недели; глава = seed % total + 1.
     Если Hebcal недоступен — запасной seed только от даты (главная не падает).
     """
-    weekday = today.weekday()               # 0=понедельник .. 6=воскресенье
+    weekday = today.weekday()
     parasha = get_parasha_number(today)
-
     if parasha is not None:
         seed = parasha * 7 + weekday
     else:
-        # fallback: seed от даты (порядковый номер дня), без параши
         seed = today.toordinal()
-
-    return seed % total_chapters + 1
+    rng = random.Random(seed)              # seed -> генератор
+    return rng.randint(1, total_chapters)  # детерминированно-случайная глава
 
 
 def get_daily_chapter_number(total_chapters):
