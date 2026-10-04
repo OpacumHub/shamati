@@ -1,5 +1,5 @@
 <script setup>
-import { NConfigProvider, NMessageProvider } from 'naive-ui'
+import { NConfigProvider, NMessageProvider, NTooltip, NButton } from 'naive-ui'
 import AppHeader from './components/AppHeader.vue'
 
 const themeOverrides = {
@@ -18,6 +18,14 @@ const themeOverrides = {
         <div class="container">
           <AppHeader />
           <router-view />
+          <div class="how-it-works">
+            <n-tooltip :style="{ maxWidth: '420px' }" trigger="click">
+              <template #trigger>
+                <n-button quaternary>Как это работает?</n-button>
+              </template>
+              Глава дня меняется ежедневно и едина для всех читателей. Её номер определяется недельной главой Торы и сегодняшней датой.
+            </n-tooltip>
+          </div>
         </div>
       </div>
     </n-message-provider>
@@ -28,5 +36,10 @@ const themeOverrides = {
 .container {
   max-width: 720px;
   width: 100%;
+}
+.how-it-works {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
 }
 </style>
