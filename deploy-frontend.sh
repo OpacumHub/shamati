@@ -4,9 +4,9 @@
 
 set -euo pipefail   # падать при любой ошибке, а не продолжать вслепую
 
-# --- пути (поправь, если структура изменится) ---
+# --- пути  ---
 CLIENT_DIR="/home/shadow/shamati/client"
-DOCROOT="/var/www/www-root/data/www/shamati.zencodecraft.ru"
+DOCROOT="/var/www/www-root/data/www/shamati.ru"
 WEB_USER="www-root"
 
 echo "==> 1/4 Сборка фронта"
