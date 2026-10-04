@@ -7,7 +7,7 @@
 Боевая версия: https://shamati.ru/
 
 ## Стек
-
+git
 - **Frontend:** Vue 3 (Composition API) + Vite + Naive UI + Vue Router + axios
 - **Backend:** Python + FastAPI (SQLAlchemy 2.0, Alembic)
 - **БД:** PostgreSQL
